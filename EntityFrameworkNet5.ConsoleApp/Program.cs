@@ -16,8 +16,8 @@ namespace EntityFrameworkNet5.ConsoleApp
         static async Task Main(string[] args)
         {
             /* Simple Insert Operation Methods */
-            //////await AddNewLeague();
-            //////await AddNewTeamsWithLeague();
+            await AddNewLeague();
+            await AddNewTeamsWithLeague();
 
             /* Simple Select Queries */
             ////await SimpleSelectQuery();
@@ -32,8 +32,8 @@ namespace EntityFrameworkNet5.ConsoleApp
             ////await AlternativeLinqSyntax();
 
             /* Perform Update */
-            ////await SimpleUpdateLeagueRecord();
-            ////await SimpleUpdateTeamRecord();
+            await SimpleUpdateLeagueRecord();
+            await SimpleUpdateTeamRecord();
 
             /* Perform Delete */
             ////await SimpleDelete();
@@ -75,7 +75,7 @@ namespace EntityFrameworkNet5.ConsoleApp
             ////await ExecStoredProcedure();
 
             /* RAW SQL Non-Query Commands */
-            await ExecuteNonQueryCommand();
+            ////await ExecuteNonQueryCommand();
 
             Console.WriteLine("Press Any Key To End....");
             Console.ReadKey();
@@ -215,7 +215,7 @@ namespace EntityFrameworkNet5.ConsoleApp
                 LeagueId = 2
             };
             context.Teams.Update(team);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync("Test Update User");
         }
 
         private static async Task GetRecord()
@@ -228,7 +228,7 @@ namespace EntityFrameworkNet5.ConsoleApp
         private static async Task SimpleUpdateLeagueRecord()
         {
             ////Retrieve Record
-            var league = await context.Leagues.FindAsync(3);
+            var league = await context.Leagues.FindAsync(20);
             ///Make Record Changes
             league.Name = "Scottish Premiership";
             ///Save Changes
@@ -310,9 +310,9 @@ namespace EntityFrameworkNet5.ConsoleApp
         static async Task AddNewLeague()
         {
             //// Adding a new League Object
-            var league = new League { Name = "Seria A" };
+            var league = new League { Name = "Audit Testing League" };
             await context.Leagues.AddAsync(league);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync("Test Audit Create User");
 
             //// Function To add new teams related to the new league object. 
             await AddTeamsWithLeague(league);

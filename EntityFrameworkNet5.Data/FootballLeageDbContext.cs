@@ -1,15 +1,18 @@
-﻿using EntityFrameworkNet5.Domain;
+﻿using EntityFrameworkNet5.Data.Configurations.Entities;
+using EntityFrameworkNet5.Domain;
+using EntityFrameworkNet5.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EntityFrameworkNet5.Data
 {
-    public class FootballLeageDbContext : DbContext
+    public class FootballLeageDbContext : AuditableFootballLeageDbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,8 +38,15 @@ namespace EntityFrameworkNet5.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TeamsCoachesLeaguesView>().HasNoKey().ToView("TeamsCoachesLeagues");
+
+            modelBuilder.ApplyConfiguration(new LeagueSeedConfiguration());
+            modelBuilder.ApplyConfiguration(new TeamSeedConfiguration());
+            modelBuilder.ApplyConfiguration(new CoachSeedConfiguration());
+
+
         }
 
+        
         public DbSet<Team> Teams { get; set; }
         public DbSet<League> Leagues { get; set; }
         public DbSet<Match> Matches { get; set; }
