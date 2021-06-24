@@ -1,4 +1,4 @@
-# EntityFrameworkNet5
+# Entity Framework Core - A Full Tour Supporting Files
 
 In this course, <strong>Entity Framework Core - A Full Tour</strong>, you will learn to work with data in your .NET applications. 
 
