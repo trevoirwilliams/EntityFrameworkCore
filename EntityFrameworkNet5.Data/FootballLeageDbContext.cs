@@ -23,26 +23,10 @@ namespace EntityFrameworkNet5.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Team>()
-                .HasMany(m => m.HomeMatches)
-                .WithOne(m => m.HomeTeam)
-                .HasForeignKey(m => m.HomeTeamId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Team>()
-                .HasMany(m => m.AwayMatches)
-                .WithOne(m => m.AwayTeam)
-                .HasForeignKey(m => m.AwayTeamId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<TeamsCoachesLeaguesView>().HasNoKey().ToView("TeamsCoachesLeagues");
-
-            modelBuilder.ApplyConfiguration(new LeagueSeedConfiguration());
-            modelBuilder.ApplyConfiguration(new TeamSeedConfiguration());
-            modelBuilder.ApplyConfiguration(new CoachSeedConfiguration());
-
+            modelBuilder.ApplyConfiguration(new LeagueConfiguration());
+            modelBuilder.ApplyConfiguration(new TeamConfiguration());
+            modelBuilder.ApplyConfiguration(new CoachConfiguration());
 
         }
 

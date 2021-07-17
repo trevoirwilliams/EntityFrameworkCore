@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 
 namespace EntityFrameworkNet5.Data.Configurations.Entities
 {
-    public class CoachSeedConfiguration : IEntityTypeConfiguration<Coach>
+    public class CoachConfiguration : IEntityTypeConfiguration<Coach>
     {
         public void Configure(EntityTypeBuilder<Coach> builder)
         {
+            builder.Property(p => p.Name).HasMaxLength(50);
+            builder.HasIndex(h => new { h.Name, h.TeamId }).IsUnique();
             builder.HasData(
                     new Coach
                     {
