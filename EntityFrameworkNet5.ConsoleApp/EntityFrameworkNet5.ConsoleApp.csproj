@@ -11,7 +11,6 @@
 
   <ItemGroup> 
     <ProjectReference Include="..\EntityFrameworkNet5.Data\EntityFrameworkNet5.Data.csproj" />
-    <ProjectReference Include="..\EntityFrameworkNet5.Domain\EntityFrameworkNet5.Domain.csproj" />
   </ItemGroup>
 
 </Project>
