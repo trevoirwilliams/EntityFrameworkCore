@@ -13,7 +13,7 @@ namespace EntityFrameworkNet5.Data.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<Team> builder)
         {
-            builder.Property(p => p.Name).HasMaxLength(50);
+            ////builder.Property(p => p.Name).HasMaxLength(50).IsRequired();
             builder.HasIndex(h => h.Name).IsUnique();
             builder.HasMany(m => m.HomeMatches)
                 .WithOne(m => m.HomeTeam)
@@ -50,7 +50,7 @@ namespace EntityFrameworkNet5.Data.Configurations.Entities
                     }
                 );
 
-           
+
         }
     }
 }

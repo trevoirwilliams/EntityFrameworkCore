@@ -13,7 +13,7 @@ namespace EntityFrameworkNet5.Data.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<Coach> builder)
         {
-            builder.Property(p => p.Name).HasMaxLength(50);
+            ////builder.Property(p => p.Name).HasMaxLength(50);
             builder.HasIndex(h => new { h.Name, h.TeamId }).IsUnique();
             builder.HasData(
                     new Coach

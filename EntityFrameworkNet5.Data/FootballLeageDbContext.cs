@@ -1,14 +1,8 @@
 ﻿using EntityFrameworkNet5.Data.Configurations.Entities;
 using EntityFrameworkNet5.Domain;
-using EntityFrameworkNet5.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace EntityFrameworkNet5.Data
 {
@@ -17,7 +11,7 @@ namespace EntityFrameworkNet5.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=FootballLeage_EfCore")
-                .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information )
+                .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information)
                 .EnableSensitiveDataLogging();
         }
 
@@ -27,10 +21,14 @@ namespace EntityFrameworkNet5.Data
             modelBuilder.ApplyConfiguration(new LeagueConfiguration());
             modelBuilder.ApplyConfiguration(new TeamConfiguration());
             modelBuilder.ApplyConfiguration(new CoachConfiguration());
-
         }
 
-        
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            // Pre-convention model configuration goes here
+            configurationBuilder.Properties<string>().HaveMaxLength(50);
+        }
+
         public DbSet<Team> Teams { get; set; }
         public DbSet<League> Leagues { get; set; }
         public DbSet<Match> Matches { get; set; }

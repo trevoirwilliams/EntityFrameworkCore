@@ -4,6 +4,7 @@ using EntityFrameworkNet5.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFrameworkNet5.Data.Migrations
 {
     [DbContext(typeof(FootballLeageDbContext))]
-    partial class FootballLeageDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211113171453_AddedNewConstraintsonStrings")]
+    partial class AddedNewConstraintsonStrings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,10 +201,6 @@ namespace EntityFrameworkNet5.Data.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("TicketPrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AwayTeamId");
@@ -297,9 +295,11 @@ namespace EntityFrameworkNet5.Data.Migrations
 
             modelBuilder.Entity("EntityFrameworkNet5.Domain.Coach", b =>
                 {
-                    b.HasOne("EntityFrameworkNet5.Domain.Team", null)
+                    b.HasOne("EntityFrameworkNet5.Domain.Team", "Team")
                         .WithOne("Coach")
                         .HasForeignKey("EntityFrameworkNet5.Domain.Coach", "TeamId");
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("EntityFrameworkNet5.Domain.Match", b =>

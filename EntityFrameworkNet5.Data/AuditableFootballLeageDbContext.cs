@@ -51,7 +51,8 @@ namespace EntityFrameworkNet5.Data
 
         private List<AuditEntry> OnBeforeSaveChanges(string username)
         {
-            var entries = ChangeTracker.Entries().Where(q => q.State != EntityState.Detached || q.State != EntityState.Unchanged);
+            var entries = ChangeTracker.Entries().Where(q => q.State == EntityState.Added || q.State == EntityState.Modified
+                || q.State == EntityState.Deleted);
             var auditEntries = new List<AuditEntry>();
 
             foreach (var entry in entries)
