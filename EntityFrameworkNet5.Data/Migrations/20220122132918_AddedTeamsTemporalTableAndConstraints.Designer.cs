@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFrameworkNet5.Data.Migrations
 {
     [DbContext(typeof(FootballLeageDbContext))]
-    [Migration("20211113171453_AddedNewConstraintsonStrings")]
-    partial class AddedNewConstraintsonStrings
+    [Migration("20220122132918_AddedTeamsTemporalTableAndConstraints")]
+    partial class AddedTeamsTemporalTableAndConstraints
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,27 +33,22 @@ namespace EntityFrameworkNet5.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Action")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("KeyValues")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NewValues")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OldValues")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TableName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -69,22 +64,19 @@ namespace EntityFrameworkNet5.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("TeamId")
                         .HasColumnType("int");
@@ -137,22 +129,19 @@ namespace EntityFrameworkNet5.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -182,8 +171,7 @@ namespace EntityFrameworkNet5.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -195,11 +183,14 @@ namespace EntityFrameworkNet5.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ModifiedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TicketPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -219,8 +210,7 @@ namespace EntityFrameworkNet5.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -229,15 +219,23 @@ namespace EntityFrameworkNet5.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ModifiedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("PeriodEnd")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PeriodEnd");
+
+                    b.Property<DateTime>("PeriodStart")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PeriodStart");
 
                     b.HasKey("Id");
 
@@ -247,7 +245,18 @@ namespace EntityFrameworkNet5.Data.Migrations
                         .IsUnique()
                         .HasFilter("[Name] IS NOT NULL");
 
-                    b.ToTable("Teams");
+                    b.ToTable("Teams", (string)null);
+
+                    b.ToTable(tb => tb.IsTemporal(ttb =>
+                        {
+                            ttb
+                                .HasPeriodStart("PeriodStart")
+                                .HasColumnName("PeriodStart");
+                            ttb
+                                .HasPeriodEnd("PeriodEnd")
+                                .HasColumnName("PeriodEnd");
+                        }
+                    ));
 
                     b.HasData(
                         new
@@ -279,27 +288,22 @@ namespace EntityFrameworkNet5.Data.Migrations
             modelBuilder.Entity("EntityFrameworkNet5.Domain.TeamsCoachesLeaguesView", b =>
                 {
                     b.Property<string>("CoachName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LeagueName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.ToView("TeamsCoachesLeagues");
                 });
 
             modelBuilder.Entity("EntityFrameworkNet5.Domain.Coach", b =>
                 {
-                    b.HasOne("EntityFrameworkNet5.Domain.Team", "Team")
+                    b.HasOne("EntityFrameworkNet5.Domain.Team", null)
                         .WithOne("Coach")
                         .HasForeignKey("EntityFrameworkNet5.Domain.Coach", "TeamId");
-
-                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("EntityFrameworkNet5.Domain.Match", b =>
@@ -326,7 +330,7 @@ namespace EntityFrameworkNet5.Data.Migrations
                     b.HasOne("EntityFrameworkNet5.Domain.League", "League")
                         .WithMany("Teams")
                         .HasForeignKey("LeagueId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("League");

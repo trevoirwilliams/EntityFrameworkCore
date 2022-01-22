@@ -3,6 +3,7 @@ using EntityFrameworkNet5.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace EntityFrameworkNet5.Data
 {
@@ -21,12 +22,28 @@ namespace EntityFrameworkNet5.Data
             modelBuilder.ApplyConfiguration(new LeagueConfiguration());
             modelBuilder.ApplyConfiguration(new TeamConfiguration());
             modelBuilder.ApplyConfiguration(new CoachConfiguration());
+
+            //Set all FK relationships should be restrict
+            var foreignKeys = modelBuilder.Model.GetEntityTypes()
+                .SelectMany(x => x.GetForeignKeys())
+                .Where(x => !x.IsOwnership && x.DeleteBehavior == DeleteBehavior.Cascade);
+
+            foreach (var fk in foreignKeys)
+            {
+                fk.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
+            //Indicate which has a History Table
+            modelBuilder
+                .Entity<Team>()
+                .ToTable("Teams", b => b.IsTemporal());
+
         }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             // Pre-convention model configuration goes here
-            configurationBuilder.Properties<string>().HaveMaxLength(50);
+            ////configurationBuilder.Properties<string>().HaveMaxLength(50);
         }
 
         public DbSet<Team> Teams { get; set; }
