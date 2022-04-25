@@ -1,6 +1,6 @@
 # Entity Framework Core - A Full Tour Supporting Files
 
-In this course, <strong>Entity Framework Core - A Full Tour</strong>, you will learn to work with data in your .NET applications. 
+In this course, [Entity Framework Core - A Full Tour](https://www.udemy.com/course/entity-framework-core-a-full-tour/?referralCode=AE4C8876B2B444EF9D22) , you will learn to work with data in your .NET applications. 
 
 Most times when course are created for .NET technologies, the details of Entity Framework and it's sheer power are neglected. We get distracted with abstractions and layers and don't focus on what Entity Framework is doing and can do. 
 
