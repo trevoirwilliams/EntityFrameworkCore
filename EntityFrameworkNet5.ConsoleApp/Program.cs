@@ -16,7 +16,9 @@ namespace EntityFrameworkNet5.ConsoleApp
         static async Task Main(string[] args)
         {
             /* Simple Insert Operation Methods */
-            ////await AddNewLeague();
+            await AddNewLeague();
+            await AddNewLeagueTransaction();
+            await AddNewLeagueTransactionWithRollback();
             ////await AddNewTeamsWithLeague();
 
             /* Simple Select Queries */
@@ -76,6 +78,7 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             /* RAW SQL Non-Query Commands */
             ////await ExecuteNonQueryCommand();
+
 
             Console.WriteLine("Press Any Key To End....");
             Console.ReadKey();
@@ -245,7 +248,7 @@ namespace EntityFrameworkNet5.ConsoleApp
         ////    var teams = await (from i in context.Teams
         ////                       where EF.Functions.Like(i.Name, $"%{teamName}%")
         ////                       select i).ToListAsync();
-            
+
         ////    foreach (var team in teams)
         ////    {
         ////        Console.WriteLine($"{team.Id} - {team.Name}");
@@ -307,42 +310,94 @@ namespace EntityFrameworkNet5.ConsoleApp
 
         ////}
 
-        ////static async Task AddNewLeague()
-        ////{
-        ////    //// Adding a new League Object
-        ////    var league = new League { Name = "Audit Testing League" };
-        ////    await context.Leagues.AddAsync(league);
-        ////    await context.SaveChangesAsync("Test Audit Create User");
+        static async Task AddNewLeague()
+        {                    
+            //// Adding a new League Object
+            var league = new League { Name = "Audit Testing League" };
+            await context.Leagues.AddAsync(league);
+            await context.SaveChangesAsync("Test Audit Create User");
 
-        ////    //// Function To add new teams related to the new league object. 
-        ////    await AddTeamsWithLeague(league);
-        ////    await context.SaveChangesAsync();
-        ////}
+            //// Function To add new teams related to the new league object. 
+            await AddTeamsWithLeague(league);
+            await context.SaveChangesAsync();
+         
+        }
 
-        ////static async Task AddTeamsWithLeague(League league)
-        ////{
-        ////    var teams = new List<Team>
-        ////    {
-        ////        new Team
-        ////        {
-        ////            Name = "Juventus",
-        ////            LeagueId = league.Id
-        ////        },
-        ////        new Team
-        ////        {
-        ////            Name = "AC Milan",
-        ////            LeagueId = league.Id
-        ////        },
-        ////        new Team
-        ////        {
-        ////            Name = "AS Roma",
-        ////            League = league
-        ////        }
-        ////    };
+        static async Task AddNewLeagueTransaction()
+        {
+            var transaction = context.Database.BeginTransaction();
 
-        ////    //// Operation to add multiple objects to database in one call.
-        ////    await context.AddRangeAsync(teams);
-        ////}
+            try
+            {
+                //// Adding a new League Object
+                var league = new League { Name = "Audit Testing League" };
+                await context.Leagues.AddAsync(league);
+                await context.SaveChangesAsync("Test Audit Create User");
+
+                //// Function To add new teams related to the new league object. 
+                await AddTeamsWithLeague(league);
+                await context.SaveChangesAsync();
+
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
+        static async Task AddNewLeagueTransactionWithRollback()
+        {
+            var transaction = context.Database.BeginTransaction();
+
+            try
+            {
+                //// Adding a new League Object
+                var league = new League { Name = "Audit Testing League" };
+                await context.Leagues.AddAsync(league);
+                await context.SaveChangesAsync("Test Audit Create User");
+
+                await transaction.CreateSavepointAsync("SavedLeague");
+
+                //// Function To add new teams related to the new league object. 
+                await AddTeamsWithLeague(league);
+                await context.SaveChangesAsync();
+
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackToSavepointAsync("SavedLeague");
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
+        static async Task AddTeamsWithLeague(League league)
+        {
+            var teams = new List<Team>
+            {
+                new Team
+                {
+                    Name = "Juventus",
+                    LeagueId = league.Id
+                },
+                new Team
+                {
+                    Name = "AC Milan",
+                    LeagueId = league.Id
+                },
+                new Team
+                {
+                    Name = "AS Roma",
+                    League = league
+                }
+            };
+
+            //// Operation to add multiple objects to database in one call.
+            await context.AddRangeAsync(teams);
+        }
 
         ////static async Task AddNewTeamsWithLeague()
         ////{
